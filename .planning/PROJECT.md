@@ -29,7 +29,7 @@ You can take a photo of your real room and convincingly preview how a product yo
 - [ ] Persist the active room + library + placements in `localStorage` across reloads
 - [ ] Export the designed room as a PNG
 - [ ] Reset the room or clear placed items without losing the library
-- [ ] Ship as a static site deployable to Vercel/Netlify free tier
+- [ ] Ship as a static site deployed to DanubeData free tier (EU-hosted, GDPR-by-default)
 
 ### Out of Scope
 
@@ -53,7 +53,7 @@ You can take a photo of your real room and convincingly preview how a product yo
 
 ## Constraints
 
-- **Budget**: Must run on a free hosting tier (Vercel/Netlify/Cloudflare Pages) indefinitely — no monthly bill for hosting, storage, or inference.
+- **Budget**: Must run on the DanubeData free tier (100 MB storage, 10 GB/mo bandwidth) indefinitely — no monthly bill for hosting, storage, or inference. Vercel Hobby was rejected because its ToS forbids commercial use and we may monetize later.
 - **Architecture**: Client-only. No backend, no database, no server-side ML. All compute happens in the user's browser.
 - **Persistence**: `localStorage` only. No accounts, no cloud, no cross-device sync.
 - **Device target**: Mobile-first responsive. Must work on a mid-range phone — including the background-removal step.
@@ -72,7 +72,7 @@ You can take a photo of your real room and convincingly preview how a product yo
 | Bring-your-own product images | Removes catalog, scraping, licensing, and commerce scope from v1 | — Pending |
 | Manual placement (no surface snapping or perspective warping) | Scene-aware placement is a research project; manual is good enough for v1 and mobile | — Pending |
 | Discard the dc-runtime prototype as a code base | `poc/support.js` is generated and only runs in the Claude.ai artifact host; keep `poc/` as UX reference only | — Pending |
-| Static deploy to Vercel/Netlify free tier | Matches client-only architecture and $0 budget | — Pending |
+| Static deploy to DanubeData free tier | Matches client-only architecture and $0 budget; preserves option to monetize later (Vercel Hobby ToS forbids commercial use); EU residency / GDPR-by-default; tradeoff is a 10 GB/mo bandwidth cap, acceptable at portfolio scale | — Pending |
 
 ## Evolution
 
