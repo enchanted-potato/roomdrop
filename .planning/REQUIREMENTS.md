@@ -116,52 +116,52 @@ Explicit anti-features. Documented to prevent scope creep.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FND-01 | TBD | Pending |
-| FND-02 | TBD | Pending |
-| FND-03 | TBD | Pending |
-| FND-04 | TBD | Pending |
-| FND-05 | TBD | Pending |
-| UPL-01 | TBD | Pending |
-| UPL-02 | TBD | Pending |
-| UPL-03 | TBD | Pending |
-| UPL-04 | TBD | Pending |
-| UPL-05 | TBD | Pending |
-| BGR-01 | TBD | Pending |
-| BGR-02 | TBD | Pending |
-| BGR-03 | TBD | Pending |
-| BGR-04 | TBD | Pending |
-| BGR-05 | TBD | Pending |
-| BGR-06 | TBD | Pending |
-| BGR-07 | TBD | Pending |
-| EDT-01 | TBD | Pending |
-| EDT-02 | TBD | Pending |
-| EDT-03 | TBD | Pending |
-| EDT-04 | TBD | Pending |
-| EDT-05 | TBD | Pending |
-| EDT-06 | TBD | Pending |
-| EDT-07 | TBD | Pending |
-| EDT-08 | TBD | Pending |
-| EDT-09 | TBD | Pending |
-| EDT-10 | TBD | Pending |
-| EDT-11 | TBD | Pending |
-| PER-01 | TBD | Pending |
-| PER-02 | TBD | Pending |
-| PER-03 | TBD | Pending |
-| PER-04 | TBD | Pending |
-| PER-05 | TBD | Pending |
-| PER-06 | TBD | Pending |
-| EXP-01 | TBD | Pending |
-| EXP-02 | TBD | Pending |
-| EXP-03 | TBD | Pending |
-| ONB-01 | TBD | Pending |
-| ONB-02 | TBD | Pending |
-| ONB-03 | TBD | Pending |
+| FND-01 | Phase 1 | Pending |
+| FND-02 | Phase 1 | Pending |
+| FND-03 | Phase 1 | Pending |
+| FND-04 | Phase 1 | Pending |
+| FND-05 | Phase 5 | Pending |
+| UPL-01 | Phase 1 | Pending |
+| UPL-02 | Phase 2 | Pending |
+| UPL-03 | Phase 1 | Pending |
+| UPL-04 | Phase 2 | Pending |
+| UPL-05 | Phase 2 | Pending |
+| BGR-01 | Phase 4 | Pending |
+| BGR-02 | Phase 4 | Pending |
+| BGR-03 | Phase 4 | Pending |
+| BGR-04 | Phase 4 | Pending |
+| BGR-05 | Phase 4 | Pending |
+| BGR-06 | Phase 4 | Pending |
+| BGR-07 | Phase 6 | Pending |
+| EDT-01 | Phase 2 | Pending |
+| EDT-02 | Phase 2 | Pending |
+| EDT-03 | Phase 2 | Pending |
+| EDT-04 | Phase 2 | Pending |
+| EDT-05 | Phase 2 | Pending |
+| EDT-06 | Phase 2 | Pending |
+| EDT-07 | Phase 2 | Pending |
+| EDT-08 | Phase 2 | Pending |
+| EDT-09 | Phase 2 | Pending |
+| EDT-10 | Phase 2 | Pending |
+| EDT-11 | Phase 2 | Pending |
+| PER-01 | Phase 2 | Pending |
+| PER-02 | Phase 1 | Pending |
+| PER-03 | Phase 1 | Pending |
+| PER-04 | Phase 1 | Pending |
+| PER-05 | Phase 3 | Pending |
+| PER-06 | Phase 5 | Pending |
+| EXP-01 | Phase 3 | Pending |
+| EXP-02 | Phase 3 | Pending |
+| EXP-03 | Phase 3 | Pending |
+| ONB-01 | Phase 5 | Pending |
+| ONB-02 | Phase 5 | Pending |
+| ONB-03 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 40 total
-- Mapped to phases: 0 (populated by roadmap)
-- Unmapped: 40 ⚠️ (until roadmap created)
+- Mapped to phases: 40 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-06-25*
-*Last updated: 2026-06-25 after initial definition*
+*Last updated: 2026-06-25 after roadmap creation*
