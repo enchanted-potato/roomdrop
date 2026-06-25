@@ -73,6 +73,7 @@ You can take a photo of your real room and convincingly preview how a product yo
 | Manual placement (no surface snapping or perspective warping) | Scene-aware placement is a research project; manual is good enough for v1 and mobile | — Pending |
 | Discard the dc-runtime prototype as a code base | `poc/support.js` is generated and only runs in the Claude.ai artifact host; keep `poc/` as UX reference only | — Pending |
 | Static deploy to DanubeData free tier | Matches client-only architecture and $0 budget; preserves option to monetize later (Vercel Hobby ToS forbids commercial use); EU residency / GDPR-by-default; tradeoff is a 10 GB/mo bandwidth cap, acceptable at portfolio scale | — Pending |
+| Use `@imgly/background-removal` (AGPL-3.0) for v1; defer license decision | AGPL requires the deployed app's source to be public; compatible with affiliate/ads monetization but blocks closed-source paid tiers. Architecture isolates the BG-removal library behind a `BgRemovalService` seam so swapping to a permissively-licensed alternative (e.g. `@huggingface/transformers` + RMBG-1.4) is cheap to do later if monetization plans change | ⚠️ Revisit before any closed-source commercialization |
 
 ## Evolution
 
