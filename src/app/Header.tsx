@@ -21,10 +21,7 @@ export function Header({ hasActiveRoom, onChangeRoom }: HeaderProps) {
         >
           RoomDrop
         </span>
-        <span
-          className="hidden md:inline ml-3 text-ink-mut"
-          style={{ fontSize: '14px' }}
-        >
+        <span className="hidden md:inline ml-3 text-ink-mut" style={{ fontSize: '14px' }}>
           Preview a piece before you buy it
         </span>
       </div>
