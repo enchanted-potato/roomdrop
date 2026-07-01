@@ -3,12 +3,8 @@ import { REPO_URL } from '../app/config';
 export function Footer() {
   return (
     <footer
-      style={{
-        padding: '1rem',
-        textAlign: 'center',
-        fontSize: '0.875rem',
-        color: '#666',
-      }}
+      className="bg-surface border-t border-border text-ink-mut text-center py-4 px-4"
+      style={{ fontSize: '16px' }}
     >
       RoomDrop is{' '}
       <a href={REPO_URL} target="_blank" rel="noopener">
