@@ -130,6 +130,8 @@ All copy locked for Phase 1. Voice: warm, plainspoken, second person, no marketi
 | HEIC error (toast body) | `iPhone HEIC photos can't be opened in the browser. In Photos, tap Share → "Save to Files" as JPEG, then upload that.` |
 | Generic upload error (title) | `Couldn't open that photo` |
 | Generic upload error (body) | `The file may be corrupted or too large. Try a different photo.` |
+| Self-heal on missing IDB blob (title) | `We couldn't reload your last photo` |
+| Self-heal on missing IDB blob (body) | `Upload again to continue.` |
 | Toast dismiss aria-label | `Dismiss` |
 | Footer link | `Open source` (links to repository README; opens in new tab, `rel="noopener"`) |
 | Footer surrounding text | `RoomDrop is ` **Open source** ` under AGPL-3.0` |
