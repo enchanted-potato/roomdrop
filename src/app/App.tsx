@@ -1,60 +1,54 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+
 import { AppShell } from './AppShell';
 import { Header } from './Header';
 import { Footer } from '../components/Footer';
-import { skeletonPing } from '../lib/idb';
+import { ToastHost } from '../components/ToastHost';
+import { RoomDropzone } from '../features/room/RoomDropzone';
+import { RoomCanvas } from '../features/room/RoomCanvas';
+import { useRoomUpload } from '../features/room/useRoomUpload';
+import { useAppStore } from '../store/useAppStore';
 
 export function App() {
-  const [ping, setPing] = useState<{ at: number; firstMount: boolean } | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const didPingRef = useRef(false);
+  const activeRoomId = useAppStore((s) => s.activeRoomId);
+  const { uploadRoom } = useRoomUpload();
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // Boot-time best-effort persistence grant (RESEARCH Pitfall 5 + Open Q #3):
+  // dampens iOS 7-day ITP eviction. Rejections are swallowed — no UI surface.
   useEffect(() => {
-    // Pitfall 4: guard against React 19 StrictMode double-invocation in dev.
-    if (didPingRef.current) return;
-    didPingRef.current = true;
-    void skeletonPing().then(setPing);
+    navigator.storage?.persist?.().catch(() => {
+      /* ignore */
+    });
   }, []);
 
-  const onChoosePhoto = () => {
-    fileInputRef.current?.click();
-  };
+  const openPicker = () => inputRef.current?.click();
 
-  // Plan 04 will replace this <main> body with <RoomDropzone> / <RoomCanvas>
-  // and pass a real `hasActiveRoom` to <Header>. Plan 02 keeps the Plan 01
-  // skeleton-ping demo intact so the IDB round-trip remains verifiable.
   return (
     <AppShell>
-      <Header hasActiveRoom={false} />
-      <main className="flex-1 flex items-center justify-center px-4">
-        <div className="text-center">
-          <p className="text-ink-mut" style={{ fontSize: '16px' }}>
-            {ping
-              ? `Last skeleton ping: ${new Date(ping.at).toISOString()}${
-                  ping.firstMount ? ' (first mount)' : ''
-                }`
-              : 'Loading…'}
-          </p>
-          <button
-            type="button"
-            onClick={onChoosePhoto}
-            className="mt-4 min-h-[44px] px-6 bg-accent text-white font-bold rounded-md"
-            style={{ fontSize: '14px' }}
-          >
-            Choose photo
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={() => {
-              /* no-op in Plan 02 — file processing lands in Plan 04 */
-            }}
-          />
-        </div>
+      <Header hasActiveRoom={activeRoomId !== null} onChangeRoom={openPicker} />
+      <main className="flex-1 flex items-center justify-center px-4 py-6 md:py-12">
+        {activeRoomId === null ? <RoomDropzone onFile={uploadRoom} /> : <RoomCanvas />}
       </main>
       <Footer />
+      {/*
+        Header-owned hidden input for the "Change room photo" flow. Kept here
+        (not in Header) so it persists while RoomDropzone is unmounted. Reset
+        value on every change so picking the same file twice still fires onChange.
+      */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) void uploadRoom(file);
+          e.currentTarget.value = '';
+        }}
+      />
+      <ToastHost />
     </AppShell>
   );
 }
