@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundations & Image Pipeline | 0/TBD | Not started | - |
+| 1. Foundations & Image Pipeline | 1/4 | In Progress|  |
 | 2. Library & Editor (originals) | 0/TBD | Not started | - |
 | 3. Export & Reset Semantics | 0/TBD | Not started | - |
 | 4. In-Browser Background Removal | 0/TBD | Not started | - |
