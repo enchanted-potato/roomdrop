@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { AppShell } from './AppShell';
+import { Header } from './Header';
 import { Footer } from '../components/Footer';
 import { skeletonPing } from '../lib/idb';
 
@@ -18,38 +20,41 @@ export function App() {
     fileInputRef.current?.click();
   };
 
+  // Plan 04 will replace this <main> body with <RoomDropzone> / <RoomCanvas>
+  // and pass a real `hasActiveRoom` to <Header>. Plan 02 keeps the Plan 01
+  // skeleton-ping demo intact so the IDB round-trip remains verifiable.
   return (
-    <div
-      style={{
-        minHeight: '100svh',
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: 'system-ui, sans-serif',
-      }}
-    >
-      <main style={{ flex: 1, padding: '1rem' }}>
-        <h1>RoomDrop</h1>
-        <p>
-          {ping
-            ? `Last skeleton ping: ${new Date(ping.at).toISOString()}${
-                ping.firstMount ? ' (first mount)' : ''
-              }`
-            : 'Loading…'}
-        </p>
-        <button type="button" onClick={onChoosePhoto}>
-          Choose photo
-        </button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          onChange={() => {
-            /* no-op in Plan 01 — file processing lands in Plan 04 */
-          }}
-        />
+    <AppShell>
+      <Header hasActiveRoom={false} />
+      <main className="flex-1 flex items-center justify-center px-4">
+        <div className="text-center">
+          <p className="text-ink-mut" style={{ fontSize: '16px' }}>
+            {ping
+              ? `Last skeleton ping: ${new Date(ping.at).toISOString()}${
+                  ping.firstMount ? ' (first mount)' : ''
+                }`
+              : 'Loading…'}
+          </p>
+          <button
+            type="button"
+            onClick={onChoosePhoto}
+            className="mt-4 min-h-[44px] px-6 bg-accent text-white font-bold rounded-md"
+            style={{ fontSize: '14px' }}
+          >
+            Choose photo
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={() => {
+              /* no-op in Plan 02 — file processing lands in Plan 04 */
+            }}
+          />
+        </div>
       </main>
       <Footer />
-    </div>
+    </AppShell>
   );
 }
