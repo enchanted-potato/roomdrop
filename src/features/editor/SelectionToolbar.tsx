@@ -76,12 +76,7 @@ export function SelectionToolbar({ roomId, placementId, onDeleted }: SelectionTo
       >
         <FlipHorizontal2 aria-hidden="true" size={20} />
       </button>
-      <button
-        type="button"
-        aria-label="Delete"
-        className={BTN + ' text-danger'}
-        onClick={onDelete}
-      >
+      <button type="button" aria-label="Delete" className={BTN + ' text-danger'} onClick={onDelete}>
         <Trash2 aria-hidden="true" size={20} />
       </button>
     </div>

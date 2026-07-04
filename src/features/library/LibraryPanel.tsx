@@ -153,9 +153,7 @@ function LibraryThumb({ item, onPlace }: { item: LibraryItem; onPlace: () => voi
           <X aria-hidden="true" size={12} />
         </button>
       )}
-      {editorOpen && (
-        <ManualCutoutEditor item={item} onClose={() => setEditorOpen(false)} />
-      )}
+      {editorOpen && <ManualCutoutEditor item={item} onClose={() => setEditorOpen(false)} />}
     </div>
   );
 }

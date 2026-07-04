@@ -121,6 +121,8 @@ const items = [
   ['table', tableSvg],
 ];
 for (const [name, svg] of items) {
-  await sharp(Buffer.from(svg)).png().toFile(path.join(OUT, `${name}.png`));
+  await sharp(Buffer.from(svg))
+    .png()
+    .toFile(path.join(OUT, `${name}.png`));
 }
 console.log('samples written to', OUT);

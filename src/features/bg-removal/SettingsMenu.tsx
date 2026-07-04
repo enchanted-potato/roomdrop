@@ -69,7 +69,11 @@ export function SettingsMenu() {
           <p className="px-4 py-1 text-ink-mut" style={{ fontSize: '12px', fontWeight: 700 }}>
             Background removal
           </p>
-          {option('fast', 'Fast', `Smaller download (${MODEL_SIZE_HINT.fast}), quicker, rougher edges.`)}
+          {option(
+            'fast',
+            'Fast',
+            `Smaller download (${MODEL_SIZE_HINT.fast}), quicker, rougher edges.`,
+          )}
           {option(
             'quality',
             hasGpu === false ? 'Quality (slow on this device)' : 'Quality',

@@ -58,7 +58,11 @@ export function ManualCutoutEditor({ item, onClose }: ManualCutoutEditorProps) {
     if (!work || !canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    ctx.putImageData(new ImageData(new Uint8ClampedArray(work.data), work.width, work.height), 0, 0);
+    ctx.putImageData(
+      new ImageData(new Uint8ClampedArray(work.data), work.width, work.height),
+      0,
+      0,
+    );
   }, []);
 
   const pushHistory = useCallback(() => {
@@ -189,7 +193,11 @@ export function ManualCutoutEditor({ item, onClose }: ManualCutoutEditorProps) {
       workCanvas.height = work.height;
       const wctx = workCanvas.getContext('2d');
       if (!wctx) throw new Error('Canvas 2D context unavailable');
-      wctx.putImageData(new ImageData(new Uint8ClampedArray(work.data), work.width, work.height), 0, 0);
+      wctx.putImageData(
+        new ImageData(new Uint8ClampedArray(work.data), work.width, work.height),
+        0,
+        0,
+      );
 
       const maskCanvas = document.createElement('canvas');
       maskCanvas.width = nW;
