@@ -1,12 +1,16 @@
+import { ExportButton } from '../features/export/ExportButton';
+import { HeaderMenu } from './HeaderMenu';
+
 export interface HeaderProps {
   hasActiveRoom: boolean;
   onChangeRoom?: () => void;
 }
 
 /**
- * Top header bar: wordmark + tagline (desktop) on the left, conditional
- * "Change room photo" button on the right when a room is loaded.
- * Copy is locked per UI-SPEC §"Copywriting Contract".
+ * Top header bar: wordmark + tagline (desktop) on the left; when a room is
+ * loaded, the Export primary action and the destructive-actions overflow menu
+ * on the right. "Change room photo" moved into the menu with confirmation in
+ * Phase 3 (PER-05). Copy is locked per UI-SPEC §"Copywriting Contract".
  */
 export function Header({ hasActiveRoom, onChangeRoom }: HeaderProps) {
   return (
@@ -26,14 +30,10 @@ export function Header({ hasActiveRoom, onChangeRoom }: HeaderProps) {
         </span>
       </div>
       {hasActiveRoom && (
-        <button
-          type="button"
-          onClick={onChangeRoom}
-          className="min-h-[44px] px-4 text-ink font-bold"
-          style={{ fontSize: '14px' }}
-        >
-          Change room photo
-        </button>
+        <div className="flex items-center gap-1">
+          <ExportButton />
+          <HeaderMenu onChangeRoom={onChangeRoom ?? (() => undefined)} />
+        </div>
       )}
     </header>
   );

@@ -46,6 +46,12 @@ interface AppActions {
   duplicatePlacement: (roomId: string, placementId: string) => Placement | null;
   /** Move one step forward (+1) or backward (-1) in z-order (EDT-07). */
   movePlacementZ: (roomId: string, placementId: string, dir: 1 | -1) => void;
+  /** Remove every placement for a room (PER-05 "Clear placements"). */
+  clearPlacements: (roomId: string) => void;
+  /** Drop placements keyed to a room that no longer exists (room replace). */
+  dropRoomPlacements: (roomId: string) => void;
+  /** Back to factory state (PER-05 "Reset everything"). IDB wipe is the caller's job. */
+  resetStore: () => void;
 }
 
 interface TransientState {
@@ -179,6 +185,21 @@ export const useAppStore = create<AppState>()(
           list.splice(to, 0, moved);
           return { placements: { ...s.placements, [roomId]: list } };
         }),
+      clearPlacements: (roomId) =>
+        set((s) => ({
+          placements: { ...s.placements, [roomId]: [] },
+          deletedPlacement: s.deletedPlacement?.roomId === roomId ? null : s.deletedPlacement,
+        })),
+      dropRoomPlacements: (roomId) =>
+        set((s) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [roomId]: _dropped, ...rest } = s.placements;
+          return {
+            placements: rest,
+            deletedPlacement: s.deletedPlacement?.roomId === roomId ? null : s.deletedPlacement,
+          };
+        }),
+      resetStore: () => set({ ...initialState }),
     }),
     {
       name: 'roomdrop',

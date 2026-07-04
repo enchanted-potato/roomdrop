@@ -87,6 +87,9 @@ export async function uploadRoom(file: File): Promise<void> {
       const { [priorRoom.id]: _evicted, ...rest } = s.rooms;
       return { rooms: rest };
     });
+    // Placements don't carry over to a new photo (Phase 3 decision) — drop
+    // the evicted room's list so it can't orphan library refcounts.
+    useAppStore.getState().dropRoomPlacements(priorRoom.id);
   }
 }
 

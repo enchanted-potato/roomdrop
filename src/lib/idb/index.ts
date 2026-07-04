@@ -1,4 +1,4 @@
-import { get, set, del } from 'idb-keyval';
+import { get, set, del, clear } from 'idb-keyval';
 
 /**
  * Namespaced blob identifiers (D-05).
@@ -21,6 +21,11 @@ export function getBlob(id: BlobId): Promise<Blob | undefined> {
 
 export function deleteBlob(id: BlobId): Promise<void> {
   return del(id);
+}
+
+/** Wipe every stored blob — "Reset everything" (PER-05). */
+export function clearAllBlobs(): Promise<void> {
+  return clear();
 }
 
 const SKELETON_KEY: BlobId = 'skeleton:hello';
