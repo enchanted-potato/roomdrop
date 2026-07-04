@@ -113,3 +113,7 @@ None.
 
 Task 1 followed RED (`743d7fe`, `test(...)`) → GREEN (`4ab27e6`, `feat(...)`). No refactor commit
 needed. RED failed as expected (module absent) before implementation.
+
+## Self-Check: PASSED
+
+All 4 source/test files and all 6 commits verified present.
