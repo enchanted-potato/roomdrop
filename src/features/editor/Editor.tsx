@@ -1,6 +1,7 @@
 import { useState, type ReactElement } from 'react';
 
 import { useAppStore } from '../../store/useAppStore';
+import { Coachmark } from '../onboarding/Coachmark';
 import { LibraryPanel } from '../library/LibraryPanel';
 import { EditorStage } from './EditorStage';
 import { SelectionToolbar } from './SelectionToolbar';
@@ -33,16 +34,19 @@ export function Editor(): ReactElement | null {
 
   return (
     <main className="flex-1 min-h-0 flex flex-col gap-3 px-4 py-3 md:px-8">
-      <EditorStage
-        room={room}
-        placements={placements}
-        selectedId={selectionValid ? selectedId : null}
-        onSelect={setSelectedId}
-        onDropItem={(itemId, x, y) => {
-          const item = libraryItems[itemId];
-          if (item) place(item, x, y);
-        }}
-      />
+      <div className="relative flex-1 min-h-0 flex flex-col">
+        <EditorStage
+          room={room}
+          placements={placements}
+          selectedId={selectionValid ? selectedId : null}
+          onSelect={setSelectedId}
+          onDropItem={(itemId, x, y) => {
+            const item = libraryItems[itemId];
+            if (item) place(item, x, y);
+          }}
+        />
+        <Coachmark />
+      </div>
       {selectionValid && (
         <SelectionToolbar
           roomId={room.id}

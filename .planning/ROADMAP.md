@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Library & Editor (originals)** - Product library + drag/scale/rotate/layer/delete editor using `cutoutId ?? originalId` seam (completed 2026-07-04)
 - [x] **Phase 3: Export & Reset Semantics** - PNG export at native resolution, Web Share on mobile, three confirmed destructive actions (completed 2026-07-04)
 - [x] **Phase 4: In-Browser Background Removal** - BgRemovalService with Fast/Quality, progress, cancel, re-run, failure fallback (completed 2026-07-04)
-- [ ] **Phase 5: Onboarding & Multi-Tab Safety** - First-run honesty notice, empty-state CTA, sample room, post-placement coachmark, BroadcastChannel warning
+- [x] **Phase 5: Onboarding & Multi-Tab Safety** - First-run honesty notice, empty-state CTA, sample room, post-placement coachmark, BroadcastChannel warning (completed 2026-07-04)
 - [ ] **Phase 6: Deploy & PWA** - vite-plugin-pwa with model caching, DanubeData deploy, build-ID footer, second-visit-is-free
 
 ## Phase Details
@@ -112,5 +112,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Library & Editor (originals) | 1/1 | Complete | 2026-07-04 |
 | 3. Export & Reset Semantics | 1/1 | Complete | 2026-07-04 |
 | 4. In-Browser Background Removal | 1/1 | Complete | 2026-07-04 |
-| 5. Onboarding & Multi-Tab Safety | 0/TBD | Not started | - |
+| 5. Onboarding & Multi-Tab Safety | 1/1 | Complete | 2026-07-04 |
 | 6. Deploy & PWA | 0/TBD | Not started | - |

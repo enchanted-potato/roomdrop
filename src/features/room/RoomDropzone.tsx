@@ -3,6 +3,8 @@ import { ImagePlus } from 'lucide-react';
 
 export interface RoomDropzoneProps {
   onFile: (file: File) => void;
+  /** "Try with a sample room" secondary entry (ONB-02). */
+  onSample?: () => void;
 }
 
 /**
@@ -12,7 +14,7 @@ export interface RoomDropzoneProps {
  * T-01-02-03 mitigation: never renders `file.name` (or any user-supplied
  * string from the File object). Filename XSS surface stays absent by design.
  */
-export function RoomDropzone({ onFile }: RoomDropzoneProps) {
+export function RoomDropzone({ onFile, onSample }: RoomDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragover, setIsDragover] = useState(false);
 
@@ -86,6 +88,21 @@ export function RoomDropzone({ onFile }: RoomDropzoneProps) {
       >
         Choose photo
       </button>
+      {onSample && (
+        <div className="mt-2">
+          <button
+            type="button"
+            className="min-h-[44px] px-4 text-ink-mut font-bold underline underline-offset-4"
+            style={{ fontSize: '14px' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSample();
+            }}
+          >
+            Try with a sample room
+          </button>
+        </div>
+      )}
       <input
         ref={inputRef}
         type="file"
