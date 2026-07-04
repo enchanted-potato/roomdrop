@@ -13,7 +13,7 @@ RoomDrop is a mobile-first, client-only SPA where you photograph your room and d
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundations & Image Pipeline** - Vite/React/TS scaffold, AGPL license, ImagePipeline, multi-room schema, IDB persistence, room photo upload survives reload (completed 2026-07-01)
-- [ ] **Phase 2: Library & Editor (originals)** - Product library + drag/scale/rotate/layer/delete editor using `cutoutId ?? originalId` seam
+- [x] **Phase 2: Library & Editor (originals)** - Product library + drag/scale/rotate/layer/delete editor using `cutoutId ?? originalId` seam (completed 2026-07-04)
 - [ ] **Phase 3: Export & Reset Semantics** - PNG export at native resolution, Web Share on mobile, three confirmed destructive actions
 - [ ] **Phase 4: In-Browser Background Removal** - BgRemovalService with Fast/Quality, progress, cancel, re-run, failure fallback
 - [ ] **Phase 5: Onboarding & Multi-Tab Safety** - First-run honesty notice, empty-state CTA, sample room, post-placement coachmark, BroadcastChannel warning
@@ -109,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundations & Image Pipeline | 4/4 | Complete   | 2026-07-01 |
-| 2. Library & Editor (originals) | 0/TBD | Not started | - |
+| 2. Library & Editor (originals) | 1/1 | Complete | 2026-07-04 |
 | 3. Export & Reset Semantics | 0/TBD | Not started | - |
 | 4. In-Browser Background Removal | 0/TBD | Not started | - |
 | 5. Onboarding & Multi-Tab Safety | 0/TBD | Not started | - |
