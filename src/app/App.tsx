@@ -5,7 +5,7 @@ import { Header } from './Header';
 import { Footer } from '../components/Footer';
 import { ToastHost } from '../components/ToastHost';
 import { RoomDropzone } from '../features/room/RoomDropzone';
-import { RoomCanvas } from '../features/room/RoomCanvas';
+import { Editor } from '../features/editor/Editor';
 import { useRoomUpload } from '../features/room/useRoomUpload';
 import { useAppStore } from '../store/useAppStore';
 
@@ -27,9 +27,13 @@ export function App() {
   return (
     <AppShell>
       <Header hasActiveRoom={activeRoomId !== null} onChangeRoom={openPicker} />
-      <main className="flex-1 flex items-center justify-center px-4 py-6 md:py-12">
-        {activeRoomId === null ? <RoomDropzone onFile={uploadRoom} /> : <RoomCanvas />}
-      </main>
+      {activeRoomId === null ? (
+        <main className="flex-1 flex items-center justify-center px-4 py-6 md:py-12">
+          <RoomDropzone onFile={uploadRoom} />
+        </main>
+      ) : (
+        <Editor />
+      )}
       <Footer />
       {/*
         Header-owned hidden input for the "Change room photo" flow. Kept here

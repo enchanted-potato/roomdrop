@@ -9,6 +9,39 @@ afterEach(() => {
 });
 
 /**
+ * Node 22+ ships an experimental global `localStorage` that shadows jsdom's
+ * and throws unless `--localstorage-file` is set. Replace it with a real
+ * in-memory Storage so zustand's persist middleware works in tests.
+ */
+class MemoryStorage implements Storage {
+  private map = new Map<string, string>();
+  get length(): number {
+    return this.map.size;
+  }
+  clear(): void {
+    this.map.clear();
+  }
+  getItem(key: string): string | null {
+    return this.map.get(key) ?? null;
+  }
+  key(index: number): string | null {
+    return [...this.map.keys()][index] ?? null;
+  }
+  removeItem(key: string): void {
+    this.map.delete(key);
+  }
+  setItem(key: string, value: string): void {
+    this.map.set(key, value);
+  }
+}
+
+Object.defineProperty(globalThis, 'localStorage', {
+  value: new MemoryStorage(),
+  writable: true,
+  configurable: true,
+});
+
+/**
  * jsdom polyfills for the browser-only canvas APIs the ImagePipeline touches.
  *
  * jsdom does not implement `createImageBitmap` or `OffscreenCanvas`. Rather

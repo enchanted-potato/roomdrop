@@ -37,11 +37,16 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
+  /* Editor is a single-viewport app: keep rubber-banding from fighting
+     canvas drags (Pitfall M1). Pinch is blocked on the stage only. */
+  overscroll-behavior: none;
 }
 
 /* App shell — owns safe-area padding + column layout for Header/main/Footer. */
 .app-shell {
-  min-height: 100svh;
+  /* Fixed (not min-) height so the editor's flex-1 stage gets a bounded box
+     and the layout never scrolls under the Konva canvas (Pitfall M3). */
+  height: 100svh;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);

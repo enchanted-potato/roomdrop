@@ -1,11 +1,19 @@
 import { useSyncExternalStore } from 'react';
 
-export type ToastVariant = 'error';
+export type ToastVariant = 'error' | 'info';
+
+export interface ToastAction {
+  label: string;
+  /** Invoked on tap; the toast dismisses itself afterwards. */
+  onAction: () => void;
+}
 
 export interface ToastSpec {
   title: string;
   body: string;
   variant: ToastVariant;
+  /** Optional inline action button (e.g. "Undo" on placement delete). */
+  action?: ToastAction;
 }
 
 // Toasts are transient UI. Kept OUT of the persisted useAppStore (Plan 03)
