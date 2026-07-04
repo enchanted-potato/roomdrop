@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" fill="#c17a52"/>
+      <g transform="translate(30 30)">
+        <rect x="0" y="14" width="40" height="22" rx="5" fill="#fbf8f2"/>
+        <rect x="-4" y="10" width="12" height="26" rx="5" fill="#f0e4d6"/>
+        <rect x="32" y="10" width="12" height="26" rx="5" fill="#f0e4d6"/>
+        <rect x="12" y="6" width="16" height="16" rx="4" fill="#7d8b6a" transform="rotate(-8 20 14)"/>
+      </g>
+    </svg>
+  </template>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    ::selection{background:#e7c9b3;}
+  </style>
+</helmet>
+<div style="min-height:100vh;background:#f1ebe1;font-family:'Mulish',sans-serif;color:#3a332c;display:flex;flex-direction:column;">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;padding:18px 32px;background:#fbf8f2;border-bottom:1px solid #e4dccf;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="width:34px;height:34px;border-radius:9px;background:#c17a52;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Marcellus',serif;font-size:18px;">C</div>
+      <div>
+        <div style="font-family:'Marcellus',serif;font-size:21px;letter-spacing:.2px;line-height:1;">Cushion Stylist</div>
+        <div style="font-size:12px;color:#9a8f7f;margin-top:3px;">Style your sofa, one cushion at a time</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button onClick="{{ clearPlaced }}" style="font-family:'Mulish',sans-serif;font-size:13px;font-weight:600;color:#7a6f5f;background:transparent;border:1px solid #e4dccf;border-radius:8px;padding:9px 16px;cursor:pointer;">Clear sofa</button>
+      <button onClick="{{ resetRoom }}" style="font-family:'Mulish',sans-serif;font-size:13px;font-weight:600;color:#7a6f5f;background:transparent;border:1px solid #e4dccf;border-radius:8px;padding:9px 16px;cursor:pointer;">New room</button>
+    </div>
+  </header>
+
+  <div style="flex:1;display:flex;min-height:0;">
+
+    <!-- ===== STAGE ===== -->
+    <main style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;min-width:0;">
+
+      <sc-if value="{{ hasRoom }}" hint-placeholder-val="{{ false }}">
+        <div ref="{{ canvasRef }}"
+             style="position:relative;border-radius:14px;overflow:hidden;box-shadow:0 18px 50px -18px rgba(58,51,44,.4);background:#000;line-height:0;max-width:100%;max-height:72vh;">
+          <img ref="{{ roomImgRef }}" draggable="false" style="display:block;max-width:78vw;max-height:72vh;width:auto;height:auto;user-select:none;"/>
+
+          <sc-for list="{{ placed }}" as="c" hint-placeholder-count="0">
+            <div data-placed-id="{{ c.id }}"
+                 style="position:absolute;left:{{ c.x }}px;top:{{ c.y }}px;width:{{ c.w }}px;height:{{ c.h }}px;box-sizing:border-box;padding:{{ c.pad }};transform:translate(-50%,-50%) rotate({{ c.rot }}deg);z-index:{{ c.z }};cursor:grab;touch-action:none;border-radius:{{ c.radius }};background:{{ c.frameBg }};box-shadow:{{ c.shadow }};outline:{{ c.outline }};outline-offset:3px;transition:outline .12s;">
+              <div style="width:100%;height:100%;border-radius:{{ c.innerRadius }};overflow:hidden;background:{{ c.bg }};"><div style="{{ c.imgStyle }}"></div></div>
+            </div>
+          </sc-for>
+
+          <div style="position:absolute;left:0;bottom:0;right:0;padding:10px 14px;font-size:12px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.45));pointer-events:none;">{{ hint }}</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ noRoom }}" hint-placeholder-val="{{ true }}">
+        <label style="width:560px;max-width:80vw;height:340px;border:2px dashed #cdbfa8;border-radius:16px;background:#fbf8f2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;cursor:pointer;text-align:center;">
+          <input type="file" accept="image/*" onChange="{{ onRoomFile }}" style="display:none;"/>
+          <div style="width:54px;height:54px;border-radius:14px;background:#f0e4d6;display:flex;align-items:center;justify-content:center;font-size:24px;">🛋️</div>
+          <div style="font-family:'Marcellus',serif;font-size:22px;">Upload a photo of your living room</div>
+          <div style="font-size:14px;color:#9a8f7f;max-width:360px;">A clear shot of your sofa works best. Then drag cushions from the library onto it.</div>
+          <div style="margin-top:6px;font-size:13px;font-weight:700;color:#fff;background:#c17a52;padding:10px 20px;border-radius:9px;">Choose photo</div>
+        </label>
+      </sc-if>
+
+    </main>
+
+    <!-- ===== LIBRARY ===== -->
+    <aside style="width:312px;flex:none;background:#fbf8f2;border-left:1px solid #e4dccf;display:flex;flex-direction:column;min-height:0;">
+      <div style="padding:20px 22px 14px;border-bottom:1px solid #ece4d6;">
+        <div style="font-family:'Marcellus',serif;font-size:18px;">Cushion library</div>
+        <div style="font-size:12px;color:#9a8f7f;margin-top:3px;">Drag a cushion onto the sofa</div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:18px 22px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <label style="aspect-ratio:1;border:2px dashed #cdbfa8;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#a8987f;">
+            <input type="file" accept="image/*" multiple onChange="{{ onCushionFiles }}" style="display:none;"/>
+            <div style="font-size:24px;line-height:1;">＋</div>
+            <div style="font-size:11px;font-weight:600;">Add photos</div>
+          </label>
+
+          <sc-for list="{{ library }}" as="c" hint-placeholder-count="0">
+            <div draggable="true" data-lib-id="{{ c.id }}" title="Drag onto sofa"
+                 style="aspect-ratio:1;border-radius:13px;overflow:hidden;cursor:grab;background:{{ c.bg }};box-shadow:0 4px 12px -5px rgba(58,51,44,.4);border:1px solid rgba(0,0,0,.05);"><div style="{{ c.imgStyle }}"></div></div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:14px;font-size:12px;color:#b3a890;line-height:1.6;">Tip: drag the same cushion more than once to use it in several spots.</div>
+
+        <div style="margin:24px 0 14px;display:flex;align-items:center;gap:10px;">
+          <div style="font-family:'Marcellus',serif;font-size:16px;color:#3a332c;">Furniture &amp; decor</div>
+          <div style="flex:1;height:1px;background:#ece4d6;"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <label style="aspect-ratio:1;border:2px dashed #cdbfa8;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#a8987f;">
+            <input type="file" accept="image/*" multiple onChange="{{ onFurnitureFiles }}" style="display:none;"/>
+            <div style="font-size:24px;line-height:1;">＋</div>
+            <div style="font-size:11px;font-weight:600;">Add furniture</div>
+          </label>
+
+          <sc-for list="{{ furnitureLibrary }}" as="c" hint-placeholder-count="0">
+            <div draggable="true" data-lib-id="{{ c.id }}" title="Drag into the room"
+                 style="aspect-ratio:1;border-radius:13px;overflow:hidden;cursor:grab;background:{{ c.bg }};box-shadow:0 4px 12px -5px rgba(58,51,44,.4);border:1px solid rgba(0,0,0,.05);"><div style="{{ c.imgStyle }}"></div></div>
+          </sc-for>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:#b3a890;line-height:1.6;">Upload a chair, lamp, plant — anything. Pick the background color to remove, then drag it into the room.</div>
+
+        <div style="margin:24px 0 14px;display:flex;align-items:center;gap:10px;">
+          <div style="font-family:'Marcellus',serif;font-size:16px;color:#3a332c;">Wall art</div>
+          <div style="flex:1;height:1px;background:#ece4d6;"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <label style="aspect-ratio:1;border:2px dashed #cdbfa8;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#a8987f;">
+            <input type="file" accept="image/*" multiple onChange="{{ onArtFiles }}" style="display:none;"/>
+            <div style="font-size:24px;line-height:1;">＋</div>
+            <div style="font-size:11px;font-weight:600;">Add painting</div>
+          </label>
+
+          <sc-for list="{{ artLibrary }}" as="c" hint-placeholder-count="0">
+            <div draggable="true" data-lib-id="{{ c.id }}" title="Drag onto the wall"
+                 style="aspect-ratio:1;border-radius:6px;overflow:hidden;cursor:grab;background:{{ c.bg }};box-shadow:0 4px 12px -5px rgba(58,51,44,.4);border:3px solid #2a2622;"><div style="{{ c.imgStyle }}"></div></div>
+          </sc-for>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:#b3a890;line-height:1.6;">Drag a painting onto the wall, then resize it to fit.</div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ===== SELECTION TOOLBAR ===== -->
+  <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#fbf8f2;border:1px solid #e4dccf;border-radius:14px;box-shadow:0 14px 40px -12px rgba(58,51,44,.45);padding:12px 16px;display:flex;align-items:center;gap:18px;z-index:50;">
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:.6px;color:#a8987f;text-transform:uppercase;">Size</span>
+        <input type="range" min="60" max="560" value="{{ selW }}" onInput="{{ onSize }}" style="width:130px;accent-color:#c17a52;"/>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:.6px;color:#a8987f;text-transform:uppercase;">Rotate</span>
+        <input type="range" min="-60" max="60" value="{{ selRot }}" onInput="{{ onRotate }}" style="width:110px;accent-color:#c17a52;"/>
+      </div>
+      <div style="width:1px;height:34px;background:#e4dccf;"></div>
+      <sc-if value="{{ selCanCut }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleCut }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:600;color:#7a6f5f;background:#f1ebe1;border:1px solid #e4dccf;border-radius:8px;padding:8px 12px;cursor:pointer;">{{ cutLabel }}</button>
+      </sc-if>
+      <button onClick="{{ sendBack }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:600;color:#7a6f5f;background:#f1ebe1;border:1px solid #e4dccf;border-radius:8px;padding:8px 12px;cursor:pointer;">Back</button>
+      <button onClick="{{ bringFront }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:600;color:#7a6f5f;background:#f1ebe1;border:1px solid #e4dccf;border-radius:8px;padding:8px 12px;cursor:pointer;">Front</button>
+      <button onClick="{{ deleteSel }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:700;color:#fff;background:#b5573f;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;">Remove</button>
+    </div>
+  </sc-if>
+
+  <!-- ===== BACKGROUND REMOVER ===== -->
+  <sc-if value="{{ isEditing }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(40,34,28,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;">
+      <div style="background:#fbf8f2;border-radius:18px;box-shadow:0 30px 80px -20px rgba(0,0,0,.55);width:700px;max-width:96vw;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="padding:18px 24px;border-bottom:1px solid #ece4d6;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+          <div>
+            <div style="font-family:'Marcellus',serif;font-size:20px;">Remove background</div>
+            <div style="font-size:12.5px;color:#9a8f7f;margin-top:4px;">Click any background area to erase that color — click more spots to clean up leftovers.</div>
+          </div>
+          <div style="font-size:12px;color:#b3a890;white-space:nowrap;padding-top:4px;">{{ editProgress }}</div>
+        </div>
+
+        <div style="flex:1;min-height:0;overflow:auto;padding:24px;display:flex;align-items:center;justify-content:center;background:#efe7da;">
+          <div style="background-image:linear-gradient(45deg,#d4c7b2 25%,transparent 25%),linear-gradient(-45deg,#d4c7b2 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d4c7b2 75%),linear-gradient(-45deg,transparent 75%,#d4c7b2 75%);background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0;border-radius:10px;box-shadow:0 8px 24px -10px rgba(0,0,0,.45);line-height:0;max-width:100%;">
+            <canvas ref="{{ editCanvasRef }}" onClick="{{ onEditClick }}" style="display:block;max-width:100%;max-height:52vh;cursor:crosshair;border-radius:10px;"></canvas>
+          </div>
+        </div>
+
+        <div style="padding:16px 24px;border-top:1px solid #ece4d6;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <span style="font-size:10px;font-weight:700;letter-spacing:.6px;color:#a8987f;text-transform:uppercase;">Tolerance · {{ editTol }}</span>
+            <input type="range" min="6" max="140" value="{{ editTol }}" onInput="{{ onEditTol }}" style="width:150px;accent-color:#c17a52;"/>
+          </div>
+          <button onClick="{{ editAuto }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:600;color:#7a6f5f;background:#f1ebe1;border:1px solid #e4dccf;border-radius:8px;padding:9px 13px;cursor:pointer;">Auto detect</button>
+          <button onClick="{{ editUndo }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:600;color:#7a6f5f;background:#f1ebe1;border:1px solid #e4dccf;border-radius:8px;padding:9px 13px;cursor:pointer;">Undo</button>
+          <button onClick="{{ editReset }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:600;color:#7a6f5f;background:#f1ebe1;border:1px solid #e4dccf;border-radius:8px;padding:9px 13px;cursor:pointer;">Reset</button>
+          <div style="flex:1;"></div>
+          <button onClick="{{ editCancel }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:600;color:#7a6f5f;background:transparent;border:1px solid #e4dccf;border-radius:8px;padding:9px 15px;cursor:pointer;">Skip</button>
+          <button onClick="{{ editConfirm }}" style="font-family:'Mulish',sans-serif;font-size:12px;font-weight:700;color:#fff;background:#c17a52;border:none;border-radius:8px;padding:10px 18px;cursor:pointer;">Add to room</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    roomImage: null,
+    library: [
+      { id: 'p1', bg: '#c8794e' },
+      { id: 'p2', bg: 'repeating-linear-gradient(45deg,#7d8b6a 0 14px,#6d7a5b 14px 28px)' },
+      { id: 'p3', bg: '#d9b382' },
+      { id: 'p4', bg: 'repeating-linear-gradient(0deg,#b5573f 0 12px,#a64d37 12px 24px)' },
+      { id: 'p5', bg: '#506b6b' },
+    ],
+    art: [],          // uploaded paintings for the wall
+    furniture: [],    // uploaded furniture/decor (background removed, free aspect)
+    placed: [],
+    selId: null,
+    editing: null,    // active background-remover modal
+    dragSrc: null,   // library item being dragged to canvas
+  };
+  _seq = 1;
+
+
+  componentDidMount() {
+    this._move = (e) => {
+      if (!this._drag) return;
+      const r = this._canvas.getBoundingClientRect();
+      const x = Math.max(0, Math.min(r.width, e.clientX - r.left - this._drag.dx));
+      const y = Math.max(0, Math.min(r.height, e.clientY - r.top - this._drag.dy));
+      this.setState(s => ({ placed: s.placed.map(p => p.id === this._drag.id ? { ...p, x, y } : p) }));
+    };
+    this._up = () => { this._drag = null; };
+    window.addEventListener('pointermove', this._move);
+    window.addEventListener('pointerup', this._up);
+
+    // Drag from library/art: bound natively so it survives standalone bundling
+    // (compound React event names like onDragStart don't survive HTML re-serialization).
+    this._dragStartH = (e) => {
+      const el = e.target && e.target.closest ? e.target.closest('[data-lib-id]') : null;
+      if (!el) return;
+      const id = el.getAttribute('data-lib-id');
+      const c = this.state.library.find(l => l.id === id) || this.state.art.find(a => a.id === id) || this.state.furniture.find(a => a.id === id);
+      if (!c) return;
+      this._dragSrc = c;
+      if (e.dataTransfer) { e.dataTransfer.effectAllowed = 'copy'; try { e.dataTransfer.setData('text/plain', id); } catch (_) {} }
+    };
+    document.addEventListener('dragstart', this._dragStartH);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('pointermove', this._move);
+    window.removeEventListener('pointerup', this._up);
+    document.removeEventListener('dragstart', this._dragStartH);
+  }
+
+  _handleDrop(e) {
+    let c = this._dragSrc;
+    if (!c) { let id = ''; try { id = e.dataTransfer.getData('text/plain'); } catch (_) {} c = this.state.library.find(l => l.id === id) || this.state.art.find(l => l.id === id) || this.state.furniture.find(l => l.id === id); }
+    if (!c) return;
+    const r = this._canvas.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const id = 'c' + (this._seq++);
+    const maxZ = this.state.placed.reduce((m, p) => Math.max(m, p.z), 0);
+    const isArt = c.type === 'art';
+    const isFurn = c.type === 'furniture';
+    this.setState(st => ({
+      placed: [...st.placed, { id, type: c.type || 'cushion', aspect: c.aspect || 0.72, bg: c.bg || '', imgSrc: c.imgSrc || '', cutSrc: c.cutSrc, rawSrc: c.rawSrc, cut: !isArt, x, y, w: isArt ? 200 : (isFurn ? 190 : 120), rot: 0, z: maxZ + 1 }],
+      selId: id,
+    }));
+    this._dragSrc = null;
+  }
+
+  _startPlacedDrag(pid, e) {
+    const p = this.state.placed.find(x => x.id === pid); if (!p) return;
+    const r = this._canvas.getBoundingClientRect();
+    this._drag = { id: p.id, dx: e.clientX - r.left - p.x, dy: e.clientY - r.top - p.y };
+    if (e.target.setPointerCapture) { try { e.target.setPointerCapture(e.pointerId); } catch (_) {} }
+    this.setState({ selId: p.id });
+  }
+
+  // Edge-stop background removal: flood inward from the border through smooth
+  // regions (background AND its soft shadow) and stop only at the strongest
+  // colour change — the cushion outline. Shadows get removed; the cushion stays.
+  cutoutWhite(file, cb) {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const max = 800;
+        const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+        const w = Math.max(1, Math.round(img.naturalWidth * scale));
+        const h = Math.max(1, Math.round(img.naturalHeight * scale));
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        const ctx = cv.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const idata = ctx.getImageData(0, 0, w, h); const d = idata.data;
+        const N = w * h;
+
+        // 1) luminance, lightly box-blurred to suppress fabric/wall noise
+        const lum = new Float32Array(N);
+        for (let i = 0; i < N; i++) { const o = i * 4; lum[i] = 0.299 * d[o] + 0.587 * d[o + 1] + 0.114 * d[o + 2]; }
+        const blur = new Float32Array(N);
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+          let s = 0, n = 0;
+          for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+            const nx = x + dx, ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+            s += lum[ny * w + nx]; n++;
+          }
+          blur[y * w + x] = s / n;
+        }
+
+        // 2) Sobel gradient magnitude = how fast colour is changing at each pixel
+        const mag = new Float32Array(N);
+        let maxMag = 0;
+        for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+          const i = y * w + x;
+          const gx = (blur[i - w + 1] + 2 * blur[i + 1] + blur[i + w + 1]) - (blur[i - w - 1] + 2 * blur[i - 1] + blur[i + w - 1]);
+          const gy = (blur[i + w - 1] + 2 * blur[i + w] + blur[i + w + 1]) - (blur[i - w - 1] + 2 * blur[i - w] + blur[i - w + 1]);
+          const m = Math.sqrt(gx * gx + gy * gy);
+          mag[i] = m; if (m > maxMag) maxMag = m;
+        }
+        // edge threshold relative to the strongest change in the image
+        const edge = Math.max(28, maxMag * 0.16);
+
+        // 3) flood from the border; cross into a pixel only while the change there
+        //    is gentle. The cushion's sharp outline halts the fill.
+        const visited = new Uint8Array(N);
+        const stack = [];
+        const push = (x, y) => {
+          if (x < 0 || y < 0 || x >= w || y >= h) return;
+          const i = y * w + x; if (visited[i]) return;
+          visited[i] = 1;
+          if (mag[i] < edge) { d[i * 4 + 3] = 0; stack.push(i); }
+        };
+        for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
+        for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
+        while (stack.length) {
+          const i = stack.pop(); const x = i % w, y = (i / w) | 0;
+          push(x + 1, y); push(x - 1, y); push(x, y + 1); push(x, y - 1);
+        }
+
+        // safety: if almost everything (or almost nothing) was removed, bail out
+        let cleared = 0; for (let i = 0; i < N; i++) if (d[i * 4 + 3] === 0) cleared++;
+        const frac = cleared / N;
+        if (frac < 0.03 || frac > 0.97) { cb(null); return; }
+
+        // 4) feather: soften the 1px boundary between kept and removed pixels
+        const alpha = new Uint8ClampedArray(N);
+        for (let i = 0; i < N; i++) alpha[i] = d[i * 4 + 3];
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+          const i = y * w + x;
+          if (alpha[i] === 0) continue;
+          let transparentN = 0;
+          for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+            const nx = x + dx, ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+            if (alpha[ny * w + nx] === 0) transparentN++;
+          }
+          if (transparentN >= 5) d[i * 4 + 3] = 120;
+        }
+
+        ctx.putImageData(idata, 0, 0);
+        cv.toBlob(b => cb(b ? URL.createObjectURL(b) : null), 'image/png');
+      } catch (err) { cb(null); }
+    };
+    img.onerror = () => cb(null);
+    img.src = URL.createObjectURL(file);
+  }
+
+  // ===== Interactive background remover =====
+  openEditor(files) {
+    this._editTotal = files.length;
+    this._editQueue = [...files];
+    this._nextEditor();
+  }
+  _nextEditor() {
+    if (!this._editQueue || !this._editQueue.length) { this.setState({ editing: null }); return; }
+    const f = this._editQueue[0];
+    this._editRawUrl = URL.createObjectURL(f);
+    const img = new Image();
+    img.onload = () => {
+      const max = 760;
+      const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const w = Math.max(1, Math.round(img.naturalWidth * scale));
+      const h = Math.max(1, Math.round(img.naturalHeight * scale));
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      const ctx = cv.getContext('2d'); ctx.drawImage(img, 0, 0, w, h);
+      this._editOrig = ctx.getImageData(0, 0, w, h);
+      this._editWork = ctx.createImageData(w, h); this._editWork.data.set(this._editOrig.data);
+      this._editW = w; this._editH = h; this._editAspect = h / w;
+      this._editHistory = [];
+      const idx = this._editTotal - this._editQueue.length;
+      this.setState({ editing: { tol: 36, total: this._editTotal, idx } }, () => this._autoRemove());
+    };
+    img.onerror = () => { this._editQueue.shift(); this._nextEditor(); };
+    img.src = this._editRawUrl;
+  }
+  _paintEditor() {
+    const cv = this._editCanvas; if (!cv || !this._editWork) return;
+    cv.width = this._editW; cv.height = this._editH;
+    cv.getContext('2d').putImageData(this._editWork, 0, 0);
+  }
+  _pushHistory() {
+    if (!this._editWork) return;
+    const a = new Uint8ClampedArray(this._editW * this._editH);
+    const d = this._editWork.data;
+    for (let i = 0; i < a.length; i++) a[i] = d[i * 4 + 3];
+    this._editHistory.push(a);
+    if (this._editHistory.length > 24) this._editHistory.shift();
+  }
+  _floodRemoveAt(sx, sy, tol) {
+    const w = this._editW, h = this._editH, d = this._editWork.data;
+    if (sx < 0 || sy < 0 || sx >= w || sy >= h) return;
+    const i0 = (sy * w + sx) * 4;
+    if (d[i0 + 3] === 0) return;
+    const tr = d[i0], tg = d[i0 + 1], tb = d[i0 + 2];
+    const t2 = tol * tol;
+    const seen = new Uint8Array(w * h);
+    const start = sy * w + sx;
+    const st = [start]; seen[start] = 1;
+    while (st.length) {
+      const i = st.pop(); const o = i * 4;
+      const dr = d[o] - tr, dg = d[o + 1] - tg, db = d[o + 2] - tb;
+      if (dr * dr + dg * dg + db * db > t2) continue;
+      d[o + 3] = 0;
+      const x = i % w, y = (i / w) | 0;
+      if (x + 1 < w && !seen[i + 1]) { seen[i + 1] = 1; st.push(i + 1); }
+      if (x - 1 >= 0 && !seen[i - 1]) { seen[i - 1] = 1; st.push(i - 1); }
+      if (y + 1 < h && !seen[i + w]) { seen[i + w] = 1; st.push(i + w); }
+      if (y - 1 >= 0 && !seen[i - w]) { seen[i - w] = 1; st.push(i - w); }
+    }
+  }
+  _onEditClick(e) {
+    const cv = this._editCanvas; if (!cv) return;
+    const r = cv.getBoundingClientRect();
+    const x = Math.floor((e.clientX - r.left) / r.width * this._editW);
+    const y = Math.floor((e.clientY - r.top) / r.height * this._editH);
+    this._pushHistory();
+    this._floodRemoveAt(x, y, this.state.editing.tol);
+    this._paintEditor();
+  }
+  _autoRemove() {
+    if (!this._editWork) return;
+    this._pushHistory();
+    const w = this._editW, h = this._editH;
+    const tol = this.state.editing ? this.state.editing.tol : 36;
+    const corners = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]];
+    for (const c of corners) this._floodRemoveAt(c[0], c[1], tol);
+    this._paintEditor();
+  }
+  _undo() {
+    if (!this._editHistory || !this._editHistory.length) return;
+    const a = this._editHistory.pop();
+    const d = this._editWork.data;
+    for (let i = 0; i < a.length; i++) d[i * 4 + 3] = a[i];
+    this._paintEditor();
+  }
+  _reset() {
+    this._editWork.data.set(this._editOrig.data);
+    this._editHistory = [];
+    this._paintEditor();
+  }
+  _featherEdit() {
+    const w = this._editW, h = this._editH, d = this._editWork.data, N = w * h;
+    const alpha = new Uint8ClampedArray(N);
+    for (let i = 0; i < N; i++) alpha[i] = d[i * 4 + 3];
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const i = y * w + x;
+      if (alpha[i] === 0) continue;
+      let tn = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        if (alpha[ny * w + nx] === 0) tn++;
+      }
+      if (tn >= 5) d[i * 4 + 3] = 130;
+    }
+  }
+  _addFurniture(imgSrc, cutSrc) {
+    const id = 'f' + (this._seq++);
+    const aspect = this._editAspect || 0.72;
+    const raw = this._editRawUrl;
+    this.setState(st => ({ furniture: [...st.furniture, { id, type: 'furniture', imgSrc, cutSrc, rawSrc: raw, aspect, cut: true }] }));
+  }
+  _finishEdit() {
+    this._featherEdit();
+    const cv = document.createElement('canvas'); cv.width = this._editW; cv.height = this._editH;
+    cv.getContext('2d').putImageData(this._editWork, 0, 0);
+    cv.toBlob(b => {
+      const url = b ? URL.createObjectURL(b) : this._editRawUrl;
+      this._addFurniture(url, url);
+      this._editQueue.shift();
+      this._nextEditor();
+    }, 'image/png');
+  }
+  _skipEdit() {
+    this._editQueue.shift();
+    this._nextEditor();
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sel = s.placed.find(p => p.id === s.selId);
+
+    return {
+      roomImage: s.roomImage,
+      hasRoom: !!s.roomImage,
+      noRoom: !s.roomImage,
+      hint: s.placed.length ? 'Drag cushions to reposition · click one to resize, rotate or remove' : 'Drag a cushion from the library onto your sofa',
+      canvasRef: (el) => {
+        this._canvas = el;
+        if (el && !el._dndBound) {
+          el._dndBound = true;
+          el.addEventListener('dragover', (e) => { e.preventDefault(); if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy'; });
+          el.addEventListener('drop', (e) => { e.preventDefault(); this._handleDrop(e); });
+          el.addEventListener('pointerdown', (e) => {
+            const t = e.target && e.target.closest ? e.target.closest('[data-placed-id]') : null;
+            if (t) { this._startPlacedDrag(t.getAttribute('data-placed-id'), e); }
+            else { this.setState({ selId: null }); }
+          });
+        }
+      },
+      roomImgRef: (el) => { if (el && s.roomImage && el.src !== s.roomImage) el.src = s.roomImage; },
+
+      onRoomFile: (e) => {
+        const f = e.target.files[0]; if (!f) return;
+        this.setState({ roomImage: URL.createObjectURL(f) });
+      },
+      onCushionFiles: (e) => {
+        const files = [...e.target.files]; if (!files.length) return;
+        files.forEach(f => {
+          const raw = URL.createObjectURL(f);
+          const id = 'u' + (this._seq++);
+          this.setState(st => ({ library: [...st.library, { id, imgSrc: raw, rawSrc: raw, cutPending: true }] }));
+          this.cutoutWhite(f, (cutUrl) => {
+            this.setState(st => ({ library: st.library.map(l => l.id === id ? { ...l, imgSrc: cutUrl || raw, cutSrc: cutUrl, cutPending: false } : l) }));
+          });
+        });
+        e.target.value = '';
+      },
+      onArtFiles: (e) => {
+        const files = [...e.target.files]; if (!files.length) return;
+        files.forEach(f => {
+          const raw = URL.createObjectURL(f);
+          const id = 'a' + (this._seq++);
+          this.setState(st => ({ art: [...st.art, { id, type: 'art', imgSrc: raw, rawSrc: raw, aspect: 0.72 }] }));
+          const im = new Image();
+          im.onload = () => {
+            const aspect = im.naturalHeight / im.naturalWidth || 0.72;
+            this.setState(st => ({ art: st.art.map(a => a.id === id ? { ...a, aspect } : a) }));
+          };
+          im.src = raw;
+        });
+        e.target.value = '';
+      },
+      onFurnitureFiles: (e) => {
+        const files = [...e.target.files]; if (!files.length) return;
+        this.openEditor(files);
+        e.target.value = '';
+      },
+
+      furnitureLibrary: s.furniture.map(c => ({
+        id: c.id,
+        bg: 'transparent',
+        imgStyle: { width: '100%', height: '100%', backgroundImage: 'url("' + c.imgSrc + '")', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' },
+      })),
+
+      artLibrary: s.art.map(c => ({
+        id: c.id,
+        bg: 'transparent',
+        imgStyle: { width: '100%', height: '100%', backgroundImage: 'url("' + c.imgSrc + '")', backgroundSize: 'cover', backgroundPosition: 'center' },
+        onDragStart: (e) => {
+          this._dragSrc = c;
+          this.setState({ dragSrc: c });
+          e.dataTransfer.effectAllowed = 'copy';
+          try { e.dataTransfer.setData('text/plain', c.id); } catch (_) {}
+        },
+      })),
+
+      library: s.library.map(c => ({
+        id: c.id,
+        bg: c.imgSrc ? 'transparent' : (c.bg || 'transparent'),
+        imgStyle: c.imgSrc
+          ? { width: '100%', height: '100%', backgroundImage: 'url("' + c.imgSrc + '")', backgroundSize: 'cover', backgroundPosition: 'center' }
+          : { display: 'none' },
+        onDragStart: (e) => {
+          this._dragSrc = c;
+          this.setState({ dragSrc: c });
+          e.dataTransfer.effectAllowed = 'copy';
+          try { e.dataTransfer.setData('text/plain', c.id); } catch (_) {}
+        },
+      })),
+
+      onCanvasDragOver: (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; },
+      onCanvasDrop: (e) => {
+        e.preventDefault();
+        let c = this.state.dragSrc || this._dragSrc;
+        if (!c) { let id = ''; try { id = e.dataTransfer.getData('text/plain'); } catch (_) {} c = this.state.library.find(l => l.id === id) || this.state.art.find(l => l.id === id); }
+        if (!c) return;
+        const r = this._canvas.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        const id = 'c' + (this._seq++);
+        const maxZ = this.state.placed.reduce((m, p) => Math.max(m, p.z), 0);
+        const isArt = c.type === 'art';
+        this.setState(st => ({
+          placed: [...st.placed, { id, type: isArt ? 'art' : 'cushion', aspect: c.aspect || 0.72, bg: c.bg || '', imgSrc: c.imgSrc || '', cutSrc: c.cutSrc, rawSrc: c.rawSrc, cut: !isArt, x, y, w: isArt ? 200 : 120, rot: 0, z: maxZ + 1 }],
+          selId: id, dragSrc: null,
+        }));
+        this._dragSrc = null;
+      },
+
+      placed: s.placed.map(p => {
+        const isArt = p.type === 'art';
+        const isFurn = p.type === 'furniture';
+        const h = (isArt || isFurn) ? Math.round(p.w * (p.aspect || 0.72)) : p.w;
+        const src = (!isArt && p.cut && p.cutSrc) ? p.cutSrc : (p.rawSrc || p.imgSrc);
+        return {
+        id: p.id,
+        x: p.x, y: p.y, w: p.w, h: h, rot: p.rot, z: p.z,
+        pad: isArt ? '6px' : '0px',
+        radius: isArt ? '3px' : '14px',
+        innerRadius: isArt ? '1px' : '14px',
+        frameBg: isArt ? '#241f1b' : 'transparent',
+        bg: p.imgSrc ? 'transparent' : (p.bg || 'transparent'),
+        imgStyle: src ? { width: '100%', height: '100%', backgroundImage: 'url("' + src + '")', backgroundSize: (!isArt && p.cut && p.cutSrc) ? 'contain' : 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' } : { display: 'none' },
+        shadow: isArt ? (p.id === s.selId ? '0 14px 30px -10px rgba(0,0,0,.7)' : '0 10px 22px -8px rgba(0,0,0,.55)') : ((p.cut && p.cutSrc) ? 'none' : (p.id === s.selId ? '0 10px 22px -6px rgba(0,0,0,.55)' : '0 6px 16px -6px rgba(0,0,0,.5)')),
+        outline: p.id === s.selId ? '2px solid #f4efe7' : '2px solid transparent',
+        onDown: (e) => {
+          e.stopPropagation();
+          const r = this._canvas.getBoundingClientRect();
+          this._drag = { id: p.id, dx: e.clientX - r.left - p.x, dy: e.clientY - r.top - p.y };
+          if (e.target.setPointerCapture) { try { e.target.setPointerCapture(e.pointerId); } catch (_) {} }
+          this.setState({ selId: p.id });
+        },
+        };
+      }),
+
+      onStageBlank: () => this.setState({ selId: null }),
+
+      hasSelection: !!sel,
+      selW: sel ? sel.w : 120,
+      selRot: sel ? sel.rot : 0,
+      selCanCut: !!(sel && sel.cutSrc),
+      cutLabel: sel && sel.cut ? 'Show white' : 'Remove white',
+      toggleCut: () => this.setState(st => ({ placed: st.placed.map(p => p.id === st.selId ? { ...p, cut: !p.cut } : p) })),
+      onSize: (e) => { const w = +e.target.value; this.setState(st => ({ placed: st.placed.map(p => p.id === st.selId ? { ...p, w } : p) })); },
+      onRotate: (e) => { const rot = +e.target.value; this.setState(st => ({ placed: st.placed.map(p => p.id === st.selId ? { ...p, rot } : p) })); },
+      bringFront: () => { const mz = this.state.placed.reduce((m, p) => Math.max(m, p.z), 0) + 1; this.setState(st => ({ placed: st.placed.map(p => p.id === st.selId ? { ...p, z: mz } : p) })); },
+      sendBack: () => { const mz = this.state.placed.reduce((m, p) => Math.min(m, p.z), 0) - 1; this.setState(st => ({ placed: st.placed.map(p => p.id === st.selId ? { ...p, z: mz } : p) })); },
+      deleteSel: () => this.setState(st => ({ placed: st.placed.filter(p => p.id !== st.selId), selId: null })),
+
+      clearPlaced: () => this.setState({ placed: [], selId: null }),
+      resetRoom: () => this.setState({ roomImage: null, placed: [], selId: null }),
+
+      isEditing: !!s.editing,
+      editTol: s.editing ? s.editing.tol : 36,
+      editProgress: s.editing && s.editing.total > 1 ? ('Image ' + (s.editing.idx + 1) + ' of ' + s.editing.total) : '',
+      editCanvasRef: (el) => { this._editCanvas = el; if (el) this._paintEditor(); },
+      onEditClick: (e) => this._onEditClick(e),
+      onEditTol: (e) => { const tol = +e.target.value; this.setState(st => ({ editing: { ...st.editing, tol } })); },
+      editAuto: () => this._autoRemove(),
+      editUndo: () => this._undo(),
+      editReset: () => this._reset(),
+      editCancel: () => this._skipEdit(),
+      editConfirm: () => this._finishEdit(),
+    };
+  }
+}
+</script>
+</body>
+</html>

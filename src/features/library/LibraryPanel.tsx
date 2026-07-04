@@ -1,9 +1,11 @@
 import { useRef } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, RotateCcw, Square, X } from 'lucide-react';
 
 import { useBlobUrl } from '../../lib/hooks/useBlobUrl';
 import { deleteBlob, type BlobId } from '../../lib/idb';
 import { useAppStore } from '../../store/useAppStore';
+import { useBgProgress } from '../bg-removal/bgProgressStore';
+import { cancelBgRemoval, rerunBgRemoval } from '../bg-removal/bgRemovalService';
 import { uploadLibraryItems } from './useLibraryUpload';
 import type { LibraryItem } from '../../store/types';
 
@@ -55,22 +57,24 @@ export function LibraryPanel({ onPlace }: LibraryPanelProps) {
   );
 }
 
-function badgeLabel(item: LibraryItem): string {
-  switch (item.bgStatus) {
-    case 'processing':
-      return 'Removing…';
-    case 'done':
-      return 'Cutout';
-    case 'failed':
-      return 'Original';
-    default:
-      return 'Original';
-  }
-}
-
 function LibraryThumb({ item, onPlace }: { item: LibraryItem; onPlace: () => void }) {
   const removeLibraryItem = useAppStore((s) => s.removeLibraryItem);
   const { url } = useBlobUrl(item.cutoutBlobId ?? item.originalBlobId);
+  const progress = useBgProgress(item.id);
+  const processing = item.bgStatus === 'processing';
+
+  // Determinate percent only during the model download; compute stage is
+  // honest-indeterminate (BGR-03).
+  const badge =
+    processing && progress?.stage === 'download' && progress.total > 0
+      ? `Downloading ${Math.round((progress.loaded / progress.total) * 100)}%`
+      : processing
+        ? 'Removing…'
+        : item.bgStatus === 'done'
+          ? 'Cutout'
+          : item.bgStatus === 'failed'
+            ? 'Failed'
+            : 'Original';
 
   const onDelete = () => {
     const { blobIdsToDelete } = removeLibraryItem(item.id);
@@ -103,16 +107,37 @@ function LibraryThumb({ item, onPlace }: { item: LibraryItem; onPlace: () => voi
         className="absolute bottom-1 left-1 rounded px-1 bg-surface/90 text-ink-mut border border-border"
         style={{ fontSize: '10px', fontWeight: 700, lineHeight: '14px' }}
       >
-        {badgeLabel(item)}
+        {badge}
       </span>
-      <button
-        type="button"
-        aria-label="Delete from library"
-        onClick={onDelete}
-        className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-surface border border-border text-ink-mut flex items-center justify-center shadow-sm"
-      >
-        <X aria-hidden="true" size={12} />
-      </button>
+      {(item.bgStatus === 'done' || item.bgStatus === 'failed') && (
+        <button
+          type="button"
+          aria-label="Re-run background removal"
+          onClick={() => rerunBgRemoval(item.id)}
+          className="absolute -top-1.5 -left-1.5 w-6 h-6 rounded-full bg-surface border border-border text-ink-mut flex items-center justify-center shadow-sm"
+        >
+          <RotateCcw aria-hidden="true" size={12} />
+        </button>
+      )}
+      {processing ? (
+        <button
+          type="button"
+          aria-label="Cancel background removal"
+          onClick={() => cancelBgRemoval(item.id)}
+          className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-surface border border-border text-danger flex items-center justify-center shadow-sm"
+        >
+          <Square aria-hidden="true" size={10} fill="currentColor" />
+        </button>
+      ) : (
+        <button
+          type="button"
+          aria-label="Delete from library"
+          onClick={onDelete}
+          className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-surface border border-border text-ink-mut flex items-center justify-center shadow-sm"
+        >
+          <X aria-hidden="true" size={12} />
+        </button>
+      )}
     </div>
   );
 }

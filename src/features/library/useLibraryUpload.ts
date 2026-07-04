@@ -3,6 +3,7 @@ import { setBlob } from '../../lib/idb';
 import { libBlobId } from '../../lib/idb/blobIds';
 import { useAppStore } from '../../store/useAppStore';
 import { showToast } from '../../store/toastStore';
+import { enqueueBgRemoval } from '../bg-removal/bgRemovalService';
 import { GENERIC_UPLOAD_TOAST, HEIC_TOAST } from '../room/useRoomUpload';
 import type { LibraryItem } from '../../store/types';
 
@@ -47,6 +48,9 @@ export async function uploadLibraryItems(files: Iterable<File>): Promise<void> {
       createdAt: Date.now(),
     };
     useAppStore.getState().addLibraryItem(item);
+    // Every upload gets BG removal automatically (BGR-01); the seam keeps the
+    // original placeable until (and in case) the cutout lands.
+    enqueueBgRemoval(item.id);
   }
 }
 

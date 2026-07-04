@@ -1,4 +1,5 @@
 import { ExportButton } from '../features/export/ExportButton';
+import { SettingsMenu } from '../features/bg-removal/SettingsMenu';
 import { HeaderMenu } from './HeaderMenu';
 
 export interface HeaderProps {
@@ -32,6 +33,7 @@ export function Header({ hasActiveRoom, onChangeRoom }: HeaderProps) {
       {hasActiveRoom && (
         <div className="flex items-center gap-1">
           <ExportButton />
+          <SettingsMenu />
           <HeaderMenu onChangeRoom={onChangeRoom ?? (() => undefined)} />
         </div>
       )}
