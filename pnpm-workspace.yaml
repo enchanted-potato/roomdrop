@@ -1,0 +1,5 @@
+allowBuilds:
+  canvas: false
+  # protobufjs' postinstall only regenerates bundled artifacts already shipped
+  # in the tarball — not needed for onnxruntime-web in the browser.
+  protobufjs: false

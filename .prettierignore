@@ -1,0 +1,9 @@
+dist/
+pnpm-lock.yaml
+node_modules/
+coverage/
+.planning/
+CLAUDE.md
+README.md
+poc/
+.claude/

@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+
+/* Tailwind v4 design tokens — exposes utilities like bg-bg, bg-surface,
+   text-ink, text-ink-mut, border-border, border-border-d, etc. */
+@theme {
+  --color-bg: #f1ebe1;
+  --color-surface: #fbf8f2;
+  --color-accent: #c17a52;
+  --color-danger: #b5573f;
+  --color-ink: #3a332c;
+  --color-ink-mut: #9a8f7f;
+  --color-ink-fnt: #b3a890;
+  --color-border: #e4dccf;
+  --color-border-d: #cdbfa8;
+
+  --font-display: 'Marcellus', serif;
+  --font-body: 'Mulish', system-ui, sans-serif;
+}
+
+/* Legacy var(--x) mirrors for inline-style consumers (headings, wordmark). */
+:root {
+  --bg: #f1ebe1;
+  --surface: #fbf8f2;
+  --accent: #c17a52;
+  --danger: #b5573f;
+  --ink: #3a332c;
+  --ink-mut: #9a8f7f;
+  --ink-fnt: #b3a890;
+  --border: #e4dccf;
+  --border-d: #cdbfa8;
+  --font-display: 'Marcellus', serif;
+  --font-body: 'Mulish', system-ui, sans-serif;
+}
+
+body {
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  /* Editor is a single-viewport app: keep rubber-banding from fighting
+     canvas drags (Pitfall M1). Pinch is blocked on the stage only. */
+  overscroll-behavior: none;
+}
+
+/* App shell — owns safe-area padding + column layout for Header/main/Footer. */
+.app-shell {
+  /* Fixed (not min-) height so the editor's flex-1 stage gets a bounded box
+     and the layout never scrolls under the Konva canvas (Pitfall M3). */
+  height: 100svh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  display: flex;
+  flex-direction: column;
+}
+
+/* SkeletonRoom pulse (1.5s per UI-SPEC). */
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Focus ring per UI-SPEC §Color. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
