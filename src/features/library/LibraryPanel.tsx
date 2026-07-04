@@ -1,11 +1,12 @@
-import { useRef } from 'react';
-import { Plus, RotateCcw, Square, X } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Plus, RotateCcw, Square, Wand2, X } from 'lucide-react';
 
 import { useBlobUrl } from '../../lib/hooks/useBlobUrl';
 import { deleteBlob, type BlobId } from '../../lib/idb';
 import { useAppStore } from '../../store/useAppStore';
 import { useBgProgress } from '../bg-removal/bgProgressStore';
-import { cancelBgRemoval, rerunBgRemoval } from '../bg-removal/bgRemovalService';
+import { cancelBgRemoval, isBgJobActive, rerunBgRemoval } from '../bg-removal/bgRemovalService';
+import { ManualCutoutEditor } from '../bg-removal/ManualCutoutEditor';
 import { uploadLibraryItems } from './useLibraryUpload';
 import type { LibraryItem } from '../../store/types';
 
@@ -62,6 +63,10 @@ function LibraryThumb({ item, onPlace }: { item: LibraryItem; onPlace: () => voi
   const { url } = useBlobUrl(item.cutoutBlobId ?? item.originalBlobId);
   const progress = useBgProgress(item.id);
   const processing = item.bgStatus === 'processing';
+  const [editorOpen, setEditorOpen] = useState(false);
+  // The manual editor is a fallback for any thumb NOT mid-ML-job; hidden (not
+  // just disabled) while a job runs to avoid a concurrent-save race (T-knz-03).
+  const canManualEdit = !processing && !isBgJobActive(item.id);
 
   // Determinate percent only during the model download; compute stage is
   // honest-indeterminate (BGR-03).
@@ -119,6 +124,16 @@ function LibraryThumb({ item, onPlace }: { item: LibraryItem; onPlace: () => voi
           <RotateCcw aria-hidden="true" size={12} />
         </button>
       )}
+      {canManualEdit && (
+        <button
+          type="button"
+          aria-label="Manually remove background"
+          onClick={() => setEditorOpen(true)}
+          className="absolute -bottom-1.5 -left-1.5 w-6 h-6 rounded-full bg-surface border border-border text-ink-mut flex items-center justify-center shadow-sm"
+        >
+          <Wand2 aria-hidden="true" size={12} />
+        </button>
+      )}
       {processing ? (
         <button
           type="button"
@@ -137,6 +152,9 @@ function LibraryThumb({ item, onPlace }: { item: LibraryItem; onPlace: () => voi
         >
           <X aria-hidden="true" size={12} />
         </button>
+      )}
+      {editorOpen && (
+        <ManualCutoutEditor item={item} onClose={() => setEditorOpen(false)} />
       )}
     </div>
   );
