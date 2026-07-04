@@ -11,6 +11,10 @@ export function Footer() {
         <strong>Open source</strong>
       </a>{' '}
       under AGPL-3.0
+      <span className="text-ink-fnt" style={{ fontSize: '12px' }}>
+        {' '}
+        · Build {__BUILD_ID__}
+      </span>
     </footer>
   );
 }
