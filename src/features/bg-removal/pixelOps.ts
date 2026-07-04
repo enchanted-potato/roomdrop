@@ -22,9 +22,10 @@ export function floodRemoveAt(img: RgbaImage, sx: number, sy: number, tol: numbe
   if (sx < 0 || sy < 0 || sx >= w || sy >= h) return;
   const i0 = (sy * w + sx) * 4;
   if (d[i0 + 3] === 0) return;
-  const tr = d[i0];
-  const tg = d[i0 + 1];
-  const tb = d[i0 + 2];
+  // Indices are always in-bounds by construction; typed-array reads are numbers.
+  const tr = d[i0]!;
+  const tg = d[i0 + 1]!;
+  const tb = d[i0 + 2]!;
   const t2 = tol * tol;
   const seen = new Uint8Array(w * h);
   const start = sy * w + sx;
@@ -33,9 +34,9 @@ export function floodRemoveAt(img: RgbaImage, sx: number, sy: number, tol: numbe
   while (stack.length) {
     const i = stack.pop() as number;
     const o = i * 4;
-    const dr = d[o] - tr;
-    const dg = d[o + 1] - tg;
-    const db = d[o + 2] - tb;
+    const dr = d[o]! - tr;
+    const dg = d[o + 1]! - tg;
+    const db = d[o + 2]! - tb;
     if (dr * dr + dg * dg + db * db > t2) continue;
     d[o + 3] = 0;
     const x = i % w;
@@ -81,7 +82,7 @@ export function feather(img: RgbaImage): void {
   const { width: w, height: h, data: d } = img;
   const n = w * h;
   const alpha = new Uint8ClampedArray(n);
-  for (let i = 0; i < n; i++) alpha[i] = d[i * 4 + 3];
+  for (let i = 0; i < n; i++) alpha[i] = d[i * 4 + 3]!;
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const i = y * w + x;
@@ -105,7 +106,7 @@ export function extractAlpha(img: RgbaImage): Uint8ClampedArray {
   const { width: w, height: h, data: d } = img;
   const n = w * h;
   const alpha = new Uint8ClampedArray(n);
-  for (let i = 0; i < n; i++) alpha[i] = d[i * 4 + 3];
+  for (let i = 0; i < n; i++) alpha[i] = d[i * 4 + 3]!;
   return alpha;
 }
 
@@ -113,7 +114,7 @@ export function extractAlpha(img: RgbaImage): Uint8ClampedArray {
 export function applyAlpha(img: RgbaImage, alpha: Uint8ClampedArray): void {
   const { data: d } = img;
   const n = alpha.length;
-  for (let i = 0; i < n; i++) d[i * 4 + 3] = alpha[i];
+  for (let i = 0; i < n; i++) d[i * 4 + 3] = alpha[i]!;
 }
 
 /**
@@ -123,5 +124,5 @@ export function applyAlpha(img: RgbaImage, alpha: Uint8ClampedArray): void {
 export function applyMask(img: RgbaImage, mask: Uint8ClampedArray): void {
   const { data: d } = img;
   const n = mask.length;
-  for (let i = 0; i < n; i++) d[i * 4 + 3] = mask[i];
+  for (let i = 0; i < n; i++) d[i * 4 + 3] = mask[i]!;
 }

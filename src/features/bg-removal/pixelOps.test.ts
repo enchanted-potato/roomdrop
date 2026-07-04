@@ -15,12 +15,12 @@ type Rgba = [number, number, number, number];
 /** Build an RgbaImage from a row-major 2D array of [r,g,b,a] pixels. */
 function makeImage(rows: Rgba[][]): RgbaImage {
   const height = rows.length;
-  const width = rows[0].length;
+  const width = rows[0]!.length;
   const data = new Uint8ClampedArray(width * height * 4);
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const o = (y * width + x) * 4;
-      const [r, g, b, a] = rows[y][x];
+      const [r, g, b, a] = rows[y]![x]!;
       data[o] = r;
       data[o + 1] = g;
       data[o + 2] = b;
@@ -32,7 +32,7 @@ function makeImage(rows: Rgba[][]): RgbaImage {
 
 /** Read the alpha of pixel (x, y). */
 function alphaAt(img: RgbaImage, x: number, y: number): number {
-  return img.data[(y * img.width + x) * 4 + 3];
+  return img.data[(y * img.width + x) * 4 + 3]!;
 }
 
 const RED: Rgba = [255, 0, 0, 255];
