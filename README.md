@@ -39,3 +39,13 @@ pnpm preview    # serve the production build locally
 ```
 
 A `justfile` wraps the same commands (`just dev`, `just test`, `just build`, …) plus `just typecheck`, `just lint`, and `just format`.
+
+## Deployment
+
+The site is served as pre-built static files from the `deploy` branch — the host (DanubeData) does not run build commands.
+
+1. Pushing to `main` triggers the GitHub Actions workflow in `.github/workflows/deploy.yml`.
+2. The workflow installs dependencies with pnpm, runs `pnpm run build`, and force-pushes the contents of `dist/` to the orphan `deploy` branch.
+3. DanubeData watches the `deploy` branch (publish directory left empty, since the built files sit at the branch root) and auto-deploys on push.
+
+To deploy manually, run the workflow from the Actions tab (`workflow_dispatch`), or build locally and push `dist/` to `deploy` yourself.
