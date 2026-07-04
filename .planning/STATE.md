@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 1 context gathered
-last_updated: "2026-07-01T20:11:35.360Z"
-last_activity: 2026-07-01 -- Phase 01 marked complete
+stopped_at: All phases complete (Phase 6 live deploy pending — see PRODUCTIONISE.md)
+last_updated: "2026-07-04T12:00:00.000Z"
+last_activity: 2026-07-04 -- Phases 02-06 implemented on branch feat/complete-app
 progress:
   total_phases: 6
-  completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
-  percent: 17
+  completed_phases: 6
+  total_plans: 9
+  completed_plans: 9
+  percent: 100
 ---
 
 # Project State
@@ -21,68 +21,39 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-24)
 
 **Core value:** Take a photo of your real room and convincingly preview how a product you're considering buying would look in it — without leaving the browser and without it costing anything to run.
-**Current focus:** Phase 01 — foundations-image-pipeline
+**Current focus:** v1.0 complete locally; productionisation next (PRODUCTIONISE.md)
 
 ## Current Position
 
-Phase: 01 — COMPLETE
-Plan: 1 of 4
-Status: Phase 01 complete
-Last activity: 2026-07-01 -- Phase 01 marked complete
+Phase: 06 — COMPLETE (local prep; live deploy documented, not executed)
+Status: All v1 phases implemented on branch `feat/complete-app`
+Last activity: 2026-07-04 -- Phases 02–06 built autonomously
 
-Progress: [░░░░░░░░░░] 0%
-
-## Performance Metrics
-
-**Velocity:**
-
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| - | - | - | - |
-
-**Recent Trend:**
-
-- Last 5 plans: —
-- Trend: —
-
-*Updated after each plan completion*
+Progress: [██████████] 100%
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+Decisions are logged in PROJECT.md Key Decisions table and per-phase CONTEXT.md files.
+Key additions from phases 2–6:
 
-- Foundations: Vite 7 + React 19 + TS SPA, Konva for stage, Zustand + idb-keyval for persistence
-- Foundations: AGPL-3.0 license + footer link decision deferred but ships in Phase 1 to keep options open
-- Architecture: `cutoutId ?? originalId` seam lets editor (Phase 2) ship before BG removal (Phase 4)
-- Persistence: Multi-room schema designed day one even though v1 UI exposes one room
+- Placements stored in room-image natural pixel space → export is a 1:1 draw
+- Z-order = array position; stable placement ids as React keys
+- Library delete is refcounted (`inLibrary` flag) so placements survive
+- BG-removal cancel = download abort + result discard (imgly v1.7 has no inference AbortSignal)
+- Settings + one-time notices live in separate localStorage keys, outside the v1 data schema
+- PWA precaches app shell only; ort/WASM/model come from imgly CDN (runtime CacheFirst)
 
 ### Pending Todos
 
-None yet.
+- Live DanubeData deploy + on-device validation (see PRODUCTIONISE.md and per-phase VERIFICATION human items)
 
 ### Blockers/Concerns
 
-None yet.
-
-## Deferred Items
-
-Items acknowledged and carried forward from previous milestone close:
-
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| *(none)* | | | |
+None blocking. Human verification items listed per phase (touch gestures, share sheet, real inference latency).
 
 ## Session Continuity
 
-Last session: 2026-06-25T18:30:25.177Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-foundations-image-pipeline/01-CONTEXT.md
+Last session: 2026-07-04
+Stopped at: v1.0 feature-complete on feat/complete-app
