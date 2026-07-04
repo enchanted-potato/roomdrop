@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-06-24)
 
 Phase: 06 — COMPLETE (local prep; live deploy documented, not executed)
 Status: All v1 phases implemented on branch `feat/complete-app`
-Last activity: 2026-07-04 -- Phases 02–06 built autonomously
+Last activity: 2026-07-04 -- Completed quick task 260704-hv0: justfile with project commands
 
 Progress: [██████████] 100%
 
@@ -52,6 +52,12 @@ Key additions from phases 2–6:
 ### Blockers/Concerns
 
 None blocking. Human verification items listed per phase (touch gestures, share sheet, real inference latency).
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260704-hv0 | Create a justfile at the repo root with the project's relevant pnpm commands, each with a comment explaining what it does | 2026-07-04 | 9fc7453 | [260704-hv0-create-a-justfile-at-the-repo-root-with-](./quick/260704-hv0-create-a-justfile-at-the-repo-root-with-/) |
 
 ## Session Continuity
 
