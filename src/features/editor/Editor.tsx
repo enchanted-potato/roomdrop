@@ -3,6 +3,7 @@ import { useState, type ReactElement } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { Coachmark } from '../onboarding/Coachmark';
 import { LibraryPanel } from '../library/LibraryPanel';
+import { RotateRoomButton } from '../room/RotateRoomButton';
 import { EditorStage } from './EditorStage';
 import { SelectionToolbar } from './SelectionToolbar';
 import { makePlacement } from './placement';
@@ -45,6 +46,7 @@ export function Editor(): ReactElement | null {
             if (item) place(item, x, y);
           }}
         />
+        <RotateRoomButton />
         <Coachmark />
       </div>
       {selectionValid && (
